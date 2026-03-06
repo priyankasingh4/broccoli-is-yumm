@@ -117,7 +117,7 @@ function update() {
         ctx.fillStyle = "white";
         ctx.font = "40px Arial";
         ctx.textAlign = "center";
-        ctx.fillText("WARNING: BRAIN CELLS DELETING... GO STUDY!", canvas.width / 2, canvas.height / 2);
+        ctx.fillText("WARNING: BRAIN CELLS DELETING...", canvas.width / 2, canvas.height / 2);
     }
 
     // Update Splatters
