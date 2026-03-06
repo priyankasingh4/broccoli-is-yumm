@@ -3,18 +3,28 @@ const ctx = canvas.getContext("2d");
 
 let balloons = [];
 let score = 0;
+let timeLeft = 60; // 60 second time limit
+let gameOver = false;
 
-// List of middle school periods
+// Countdown timer function
+const timer = setInterval(() => {
+    if (timeLeft > 0) {
+        timeLeft--;
+    } else {
+        gameOver = true;
+        clearInterval(timer); // Stop the timer when it hits 0
+    }
+}, 1000);
+
 const periods = ["Math", "Science", "English", "History", "Art", "PE", "Music", "Computer"];
 
 class Balloon {
     constructor() {
-        this.radius = Math.random() * 25 + 35; // Slightly larger to fit text
+        this.radius = Math.random() * 25 + 35;
         this.x = Math.random() * (canvas.width - this.radius * 2) + this.radius;
         this.y = canvas.height + this.radius;
         this.speed = Math.random() * 1.5 + 1;
         this.color = `hsl(${Math.random() * 360}, 70%, 50%)`;
-        // Pick a random period name
         this.period = periods[Math.floor(Math.random() * periods.length)];
     }
 
@@ -23,7 +33,6 @@ class Balloon {
     }
 
     draw() {
-        // Draw Balloon circle
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.fillStyle = this.color;
@@ -33,7 +42,6 @@ class Balloon {
         ctx.stroke();
         ctx.closePath();
 
-        // Draw Period Name text
         ctx.fillStyle = "white";
         ctx.font = "bold 14px Arial";
         ctx.textAlign = "center";
@@ -43,6 +51,8 @@ class Balloon {
 }
 
 canvas.addEventListener("mousedown", (e) => {
+    if (gameOver) return; // Disable clicking when game is over
+
     const rect = canvas.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
@@ -50,7 +60,6 @@ canvas.addEventListener("mousedown", (e) => {
     for (let i = balloons.length - 1; i >= 0; i--) {
         let b = balloons[i];
         let dist = Math.sqrt((mouseX - b.x) ** 2 + (mouseY - b.y) ** 2);
-        
         if (dist < b.radius) {
             balloons.splice(i, 1);
             score++;
@@ -62,17 +71,30 @@ canvas.addEventListener("mousedown", (e) => {
 function update() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (Math.random() < 0.02) balloons.push(new Balloon());
+    if (!gameOver) {
+        if (Math.random() < 0.02) balloons.push(new Balloon());
 
-    balloons.forEach((b, index) => {
-        b.update();
-        b.draw();
-        if (b.y + b.radius < 0) balloons.splice(index, 1);
-    });
+        balloons.forEach((b, index) => {
+            b.update();
+            b.draw();
+            if (b.y + b.radius < 0) balloons.splice(index, 1);
+        });
+    } else {
+        // Game Over Screen
+        ctx.fillStyle = "white";
+        ctx.font = "40px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
+        ctx.font = "20px Arial";
+        ctx.fillText("Final Score: " + score, canvas.width / 2, canvas.height / 2 + 40);
+    }
 
+    // Draw Score & Time (Always visible)
     ctx.fillStyle = "white";
     ctx.font = "20px Arial";
-    ctx.fillText("Score: " + score, 50, 30);
+    ctx.textAlign = "left";
+    ctx.fillText("Score: " + score, 20, 30);
+    ctx.fillText("Time: " + timeLeft + "s", 20, 60);
 
     requestAnimationFrame(update);
 }
