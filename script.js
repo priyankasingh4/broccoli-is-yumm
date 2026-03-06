@@ -70,7 +70,7 @@ function update() {
         if (b.y + b.radius < 0) balloons.splice(index, 1);
     });
 
-    ctx.fillStyle = "black";
+    ctx.fillStyle = "white";
     ctx.font = "20px Arial";
     ctx.fillText("Score: " + score, 50, 30);
 
