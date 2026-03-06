@@ -117,7 +117,7 @@ function update() {
         ctx.fillStyle = "white";
         ctx.font = "40px Arial";
         ctx.textAlign = "center";
-        ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
+        ctx.fillText("SCHOOL'S OUT! GO HOME!", canvas.width / 2, canvas.height / 2);
     }
 
     // Update Splatters
